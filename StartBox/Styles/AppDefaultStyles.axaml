@@ -1,0 +1,103 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Design.PreviewWith>
+        <Border Padding="5" Background="{DynamicResource PrimaryBackgroundGradient}" Width="382" Height="618">
+            <!-- Add Controls for Previewer Here -->
+            <Grid RowDefinitions="Auto * Auto">
+                <Grid ColumnDefinitions="Auto * Auto">
+                    <Image Source="{SvgImage /Assets/Images/StartBoxIcon.svg}" Width="64"/>
+                    <Button Grid.Column="2" Classes="transparent">
+                        <Label Content="&#xE128;" Classes="icon-only"/>
+                    </Button>
+                </Grid>
+                
+                <StackPanel Grid.Row="1">
+                    <Button HorizontalAlignment="Stretch">
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="&#xE560;" Classes="icon"/>
+                            <Label Content="桌面"></Label>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+                
+                <Grid Grid.Row="2" ColumnDefinitions="Auto * Auto">
+                    <Button Classes="transparent">
+                        <Label Content="&#xE272;" Classes="icon-only"/>
+                    </Button>
+                    <Button Grid.Column="2" Classes="transparent">
+                        <Label Content="&#xE3D4;" Classes="icon-only"/>
+                    </Button>
+                </Grid>
+            </Grid>
+        </Border>
+    </Design.PreviewWith>
+
+    <!-- Add Styles Here -->
+    
+    <Style Selector="Window">
+        <Setter Property="FontFamily" Value="{DynamicResource LxgwWenKaiGb}"/>
+        <Setter Property="FontSize" Value="30"></Setter>
+    </Style>
+    
+    <Style Selector="Border.acrylic">
+        <Setter Property="BoxShadow" Value="2 4 8 0 #3F000000"></Setter>
+    </Style>
+    
+    <Style Selector="Label">
+        <Setter Property="Foreground" Value="{DynamicResource PrimaryForeground}"></Setter>
+    </Style>
+    
+    <Style Selector="Label.title">
+        <Setter Property="FontSize" Value="35"></Setter>
+        <Setter Property="FontWeight" Value="Bold"></Setter>
+    </Style>
+    
+    <Style Selector="TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource PrimaryForeground}"></Setter>
+    </Style>
+    
+    <Style Selector="Button">
+        <Setter Property="CornerRadius" Value="4"></Setter>
+        <Setter Property="Foreground" Value="{DynamicResource PrimaryForeground}"></Setter>
+    </Style>
+    
+    <Style Selector="Label.icon,Label.icon-only">
+        <Setter Property="FontSize" Value="32"></Setter>
+        <Setter Property="HorizontalAlignment" Value="Center"></Setter>
+        <Setter Property="VerticalAlignment" Value="Center"></Setter>
+    </Style>
+    
+    <Style Selector="Label.icon">
+        <Setter Property="FontFamily" Value="{DynamicResource PhosphorFill}" />
+    </Style>
+    
+    <Style Selector="Label.icon-only">
+        <Setter Property="FontFamily" Value="{DynamicResource Phosphor}"></Setter>
+    </Style>
+
+    <Style Selector="Button /template/ ContentPresenter">
+        <Setter Property="RenderTransform" Value="scale(1)" />
+
+        <Setter Property="Transitions">
+            <Transitions>
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.1" />
+            </Transitions>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.transparent:pointerover /template/ ContentPresenter">
+        <Setter Property="RenderTransform" Value="scale(1.1)" />
+    </Style>
+
+    <Style Selector="Button:pointerover /template/ ContentPresenter">
+        
+    </Style>
+
+    <Style Selector="Button.transparent">
+        <Setter Property="Background" Value="transparent" />
+    </Style>
+
+    <Style Selector="Button.transparent:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="transparent" />
+    </Style>
+</Styles>

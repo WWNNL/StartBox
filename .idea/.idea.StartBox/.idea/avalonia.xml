@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AvaloniaProject">
+    <option name="projectPerEditor">
+      <map>
+        <entry key="StartBox/App.axaml" value="StartBox/StartBox.csproj" />
+        <entry key="StartBox/Controls/GridCard.axaml" value="StartBox/StartBox.csproj" />
+        <entry key="StartBox/Controls/InputBox.axaml" value="StartBox/StartBox.csproj" />
+        <entry key="StartBox/Controls/SearchBox.axaml" value="StartBox/StartBox.csproj" />
+        <entry key="StartBox/MainWindow.axaml" value="StartBox/StartBox.csproj" />
+        <entry key="StartBox/Pages/DockPage.axaml" value="StartBox/StartBox.csproj" />
+        <entry key="StartBox/Pages/SettingsPage.axaml" value="StartBox/StartBox.csproj" />
+        <entry key="StartBox/Pages/StoragePageBase.axaml" value="StartBox/StartBox.csproj" />
+        <entry key="StartBox/Style/AppDefaultStyles.axaml" value="StartBox/StartBox.csproj" />
+        <entry key="StartBox/Styles/AppDefaultStyles.axaml" value="StartBox/StartBox.csproj" />
+      </map>
+    </option>
+  </component>
+</project>

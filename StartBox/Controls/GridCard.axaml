@@ -1,0 +1,69 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="300"
+             x:Class="StartBox.Controls.GridCard" Background="{DynamicResource TempBackgroundGradient}">
+    <UserControl.Styles>
+        <Style Selector="TextBlock.card-title">
+            <Setter Property="FontSize" Value="20"></Setter>
+        </Style>
+        
+        <Style Selector="TextBlock.card-about">
+            <Setter Property="FontSize" Value="18"></Setter>
+        </Style>
+    
+        <Style Selector="TextBlock.card-version">
+            <Setter Property="FontSize" Value="12"></Setter>
+            <Setter Property="Foreground" Value="{DynamicResource VersionForeground}"></Setter>
+        </Style>
+    
+        <Style Selector="Label.card-button">
+            <Setter Property="FontSize" Value="22"></Setter>
+        </Style>
+        
+        <Style Selector="Label.card-icon">
+            <Setter Property="FontSize" Value="22"></Setter>
+            <Setter Property="FontFamily" Value="{DynamicResource Phosphor}"/>
+            <Setter Property="HorizontalAlignment" Value="Center"></Setter>
+            <Setter Property="VerticalAlignment" Value="Center"></Setter>
+        </Style>
+    </UserControl.Styles>
+    <Border Padding="8" BorderThickness="1" CornerRadius="8" Classes="acrylic"
+            HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10" Width="280">
+         <Grid ColumnDefinitions="Auto,*" RowSpacing="12">
+            <Image Grid.Column="0" Name="AppIconPath"
+                   Source="/Assets/Images/StartBoxIcon.png" 
+                   Width="48" 
+                   Height="48" 
+                   VerticalAlignment="Top" 
+                   Margin="0,2,16,0"/>
+    
+            <StackPanel Grid.Column="1" Spacing="6">
+            
+                <StackPanel Spacing="2">
+                    <TextBlock Name="AppTitle" Text="应用程序" FontWeight="SemiBold" Classes="card-title"/>
+                    <TextBlock Name="AppVersion" Text="v1.0.0" Classes="card-version"/>
+                </StackPanel>
+
+                <TextBlock Name="AppAbout" TextWrapping="Wrap" LineHeight="18" Classes="card-about">
+                    这是应用程序的描述信息&#10;显示更多详细内容&#10;第三行文本内容
+                </TextBlock>
+                <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,4,0,0">
+                    <Button>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="&#xEDD6;" Classes="card-icon"/>
+                            <Label Content="定位" Classes="card-button"/>
+                        </StackPanel>
+                    </Button>
+                    <Button>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="&#xE3D0;" Classes="card-icon"/>
+                            <Label Content="运行" Classes="card-button"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>

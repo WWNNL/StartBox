@@ -1,0 +1,89 @@
+<Window xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="618"
+    Width="1000" Height="618"
+    x:Class="StartBox.MainWindow"
+    xmlns:controls="using:StartBox.Controls"
+    xmlns:pages="using:StartBox.Pages"
+    Icon="/Assets/Images/StartBoxIcon.png"
+    Title="StartBox">
+    <Border Background="{DynamicResource PrimaryBackgroundGradient}">
+        <!-- 1. 外层改为 Auto, *。侧边栏用固定宽度，右侧主内容区用 * 填满 -->
+        <Grid ColumnDefinitions="Auto *">
+            <Border  BorderThickness="1" Classes="acrylic" Padding="1">
+            <!-- 2. 侧边栏容器：设置初始宽度，开启 ClipToBounds 裁剪溢出内容 -->
+                <Border Name="SideBar" Width="382" ClipToBounds="True">
+                    <!-- 核心：监听 Width 属性，实现平滑收缩动画 -->
+                    <Border.Transitions>
+                        <Transitions>
+                            <DoubleTransition Property="Width" Duration="0:0:0.3" Easing="QuadraticEaseInOut" />
+                        </Transitions>
+                    </Border.Transitions>
+
+                    <!-- 三行布局 -->
+                    <Grid RowDefinitions="Auto * Auto" Margin="2">
+                        
+                        <!-- 顶栏 -->
+                        <Grid ColumnDefinitions="Auto * Auto">
+                            <StackPanel Orientation="Horizontal">
+                                <Button Classes="transparent">
+                                    <Image PointerPressed="OnToggleSideBar" Source="{SvgImage /Assets/Images/StartBoxIcon.svg}" Width="42"/>
+                                </Button>
+                                
+                                <Label Name="LblTitle" Content="StartBox星盒" VerticalAlignment="Center" Classes="title">
+                                    <!-- 标题在收起时如果不想被切掉，可以加个淡出动画 -->
+                                    <Label.Transitions>
+                                        <Transitions>
+                                            <DoubleTransition Property="Opacity" Duration="0:0:0.2" />
+                                        </Transitions>
+                                    </Label.Transitions>
+                                </Label>
+                            </StackPanel>
+                            
+                            <!-- 收起/展开按钮 -->
+                            <Button Grid.Column="2" Classes="transparent" Click="OnToggleSideBar">
+                                <Label Content="&#xE128;" Classes="icon-only"/>
+                            </Button>
+                        </Grid>
+                        
+                        <!-- 中栏 -->
+                        <pages:DockPage Name="LeftDock" Grid.Row="1"></pages:DockPage>
+                        
+                        <!-- 底栏 -->
+                        <Grid Grid.Row="2" ColumnDefinitions="Auto * Auto">
+                            <Button Classes="transparent">
+                                <Label Content="&#xE272;" Classes="icon-only"/>
+                            </Button>
+                            
+                            <Button Name="BtnBottomAdd" Grid.Column="2" Classes="transparent">
+                                <Label Content="&#xE3D4;" Classes="icon-only"/>
+                                <Button.Transitions>
+                                    <Transitions>
+                                        <DoubleTransition Property="Opacity" Duration="0:0:0.2" />
+                                    </Transitions>
+                                </Button.Transitions>
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </Border>
+            </Border>
+            <!-- 右侧主内容区 -->
+            <Grid Grid.Column="1">
+                <Grid RowDefinitions="Auto *">
+                    <Grid ColumnDefinitions="* Auto">
+                        <controls:SearchBox Height="60"></controls:SearchBox>
+                        
+                        <Button Grid.Column="1" Classes="transparent">
+                            <Label Content="&#xE3D4;" Classes="icon-only"/>
+                        </Button>
+                    </Grid>
+                    
+                    <!-- <TextBlock Grid.Row="1" Text="主内容区" HorizontalAlignment="Center" VerticalAlignment="Center"/> -->
+                    <pages:StoragePageBase Name="RightPageContainer" Grid.Row="1"></pages:StoragePageBase>
+                </Grid>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>

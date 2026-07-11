@@ -1,0 +1,31 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="StartBox.App"
+             RequestedThemeVariant="Default">
+             <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+
+    <Application.Styles>
+        <FluentTheme />
+        <StyleInclude Source="Styles/AppDefaultStyles.axaml" />
+    </Application.Styles>
+             
+    <Application.Resources>
+        <!-- <SolidColorBrush x:Key="PrimaryBackground">#14172D</SolidColorBrush> -->
+        <SolidColorBrush x:Key="PrimaryForeground">White</SolidColorBrush>
+        <SolidColorBrush x:Key="VersionForeground">Gray</SolidColorBrush>
+        
+        <!-- <SolidColorBrush x:Key="PrimaryHoverBackground">#ffffff</SolidColorBrush> -->
+        <!-- <SolidColorBrush x:Key="PrimaryHoverForeground">#cfcfcf</SolidColorBrush> -->
+        
+        <LinearGradientBrush x:Key="PrimaryBackgroundGradient" StartPoint="0% 0%" EndPoint="100% 100%">
+            <GradientStop Offset="0" Color="#ff6e7f" />
+            <GradientStop Offset="1" Color="#bfe9ff" />
+        </LinearGradientBrush>
+        
+        <SolidColorBrush x:Key="TempBackgroundGradient">Transparent</SolidColorBrush>
+        
+        <FontFamily x:Key="LxgwWenKaiGb">Assets/Fonts/LXGWWenKaiGB-Regular.ttf#LXGW WenKai GB</FontFamily>
+        <FontFamily x:Key="Phosphor">Assets/Fonts/Phosphor.ttf#Phosphor</FontFamily>
+        <FontFamily x:Key="PhosphorFill">Assets/Fonts/Phosphor-Fill.ttf#Phosphor-Fill</FontFamily>
+    </Application.Resources>
+</Application>

@@ -1,0 +1,61 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="60"
+             x:Class="StartBox.Controls.SearchBox" Background="{DynamicResource TempBackgroundGradient}">
+    
+    <UserControl.Styles>
+        <Style Selector="TextBox.TransparentInner">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Foreground" Value="#E5FFFFFF"/>
+        </Style>
+        
+        <Style Selector="TextBox.TransparentInner:pointerover /template/ Border#PART_BorderElement">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+        </Style>
+        
+        <Style Selector="TextBox.TransparentInner:focus /template/ Border#PART_BorderElement">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+        </Style>
+        
+        <Style Selector="Label /template/ ContentPresenter">
+            <Setter Property="RenderTransform" Value="scale(1)" />
+
+            <Setter Property="Transitions">
+                <Transitions>
+                    <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.1" />
+                </Transitions>
+            </Setter>
+        </Style>
+
+        <Style Selector="Label.search-icon:pointerover /template/ ContentPresenter">
+            <Setter Property="RenderTransform" Value="scale(1.1)" />
+        </Style>
+        
+        <Style Selector="Label.search-icon">
+            <Setter Property="FontSize" Value="15"></Setter>
+            <Setter Property="FontFamily" Value="{DynamicResource Phosphor}"/>
+            <Setter Property="HorizontalAlignment" Value="Center"></Setter>
+            <Setter Property="VerticalAlignment" Value="Center"></Setter>
+        </Style>
+    </UserControl.Styles>
+
+    <Border Background="#12FFFFFF" BorderBrush="#26FFFFFF" BorderThickness="1" CornerRadius="8"
+            Padding="6,10" Margin="10" Classes="acrylic">
+         <Grid ColumnDefinitions="Auto,*,Auto" VerticalAlignment="Center">
+            <Label Content="&#xE30C;" Classes="search-icon"></Label>
+            
+            <TextBox Name="InnerTextBox" Grid.Column="1" Classes="TransparentInner" PlaceholderText="请输入文本..."/>
+            
+            <Label Grid.Column="2" Content="&#xE4F6;" Classes="search-icon" PointerPressed="ClearButton_Click"
+                   IsVisible="{Binding Text, ElementName=InnerTextBox, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+            </Label>
+        </Grid>
+    </Border>
+</UserControl>

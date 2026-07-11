@@ -1,0 +1,27 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="382" d:DesignHeight="618"
+             Background="{DynamicResource TempBackgroundGradient}"
+             x:Class="StartBox.Pages.DockPage">
+    <ScrollViewer>
+        <StackPanel>
+            <!-- 【关键修改】：将 StackPanel 改为 Grid，分为 40px(图标) 和 *(文字) -->
+            <Button HorizontalAlignment="Stretch" Margin="0,2">
+                <Grid ColumnDefinitions="40,*">
+                    <Label Content="&#xE560;" Classes="icon" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <!-- 文字放在第二列，当侧边栏变窄时，这一列变窄，文字会被物理截断 -->
+                    <Label Content="桌面" Grid.Column="1" VerticalAlignment="Center"/> 
+                </Grid>
+            </Button>
+            <Button HorizontalAlignment="Stretch" Margin="0,2">
+                <Grid ColumnDefinitions="40,*">
+                    <Label Content="&#xE390;" Classes="icon" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <!-- 文字放在第二列，当侧边栏变窄时，这一列变窄，文字会被物理截断 -->
+                    <Label Content="收纳盒" Grid.Column="1" VerticalAlignment="Center"/> 
+                </Grid>
+            </Button>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
