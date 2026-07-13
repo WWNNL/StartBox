@@ -24,7 +24,7 @@
             <Setter Property="BorderBrush" Value="Transparent"/>
         </Style>
         
-        <Style Selector="Label /template/ ContentPresenter">
+        <Style Selector="TextBlock /template/ ContentPresenter">
             <Setter Property="RenderTransform" Value="scale(1)" />
 
             <Setter Property="Transitions">
@@ -34,11 +34,11 @@
             </Setter>
         </Style>
 
-        <Style Selector="Label.search-icon:pointerover /template/ ContentPresenter">
+        <Style Selector="TextBlock.search-icon:pointerover /template/ ContentPresenter">
             <Setter Property="RenderTransform" Value="scale(1.1)" />
         </Style>
         
-        <Style Selector="Label.search-icon">
+        <Style Selector="TextBlock.search-icon">
             <Setter Property="FontSize" Value="15"></Setter>
             <Setter Property="FontFamily" Value="{DynamicResource Phosphor}"/>
             <Setter Property="HorizontalAlignment" Value="Center"></Setter>
@@ -49,13 +49,13 @@
     <Border Background="#12FFFFFF" BorderBrush="#26FFFFFF" BorderThickness="1" CornerRadius="8"
             Padding="6,10" Margin="10" Classes="acrylic">
          <Grid ColumnDefinitions="Auto,*,Auto" VerticalAlignment="Center">
-            <Label Content="&#xE30C;" Classes="search-icon"></Label>
+            <TextBlock Text="&#xE30C;" Classes="search-icon"></TextBlock>
             
             <TextBox Name="InnerTextBox" Grid.Column="1" Classes="TransparentInner" PlaceholderText="请输入文本..."/>
             
-            <Label Grid.Column="2" Content="&#xE4F6;" Classes="search-icon" PointerPressed="ClearButton_Click"
-                   IsVisible="{Binding Text, ElementName=InnerTextBox, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
-            </Label>
+            <TextBlock Grid.Column="2" Text="&#xE4F6;" Classes="search-icon" PointerPressed="ClearButton_Click"
+                       IsVisible="{Binding Text, ElementName=InnerTextBox, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+            </TextBlock>
         </Grid>
     </Border>
 </UserControl>

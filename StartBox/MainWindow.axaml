@@ -32,19 +32,19 @@
                                     <Image PointerPressed="OnToggleSideBar" Source="{SvgImage /Assets/Images/StartBoxIcon.svg}" Width="42"/>
                                 </Button>
                                 
-                                <Label Name="LblTitle" Content="StartBox星盒" VerticalAlignment="Center" Classes="title">
+                                <TextBlock Name="LblTitle" Text="StartBox星盒" VerticalAlignment="Center" Classes="title">
                                     <!-- 标题在收起时如果不想被切掉，可以加个淡出动画 -->
-                                    <Label.Transitions>
+                                    <TextBlock.Transitions>
                                         <Transitions>
                                             <DoubleTransition Property="Opacity" Duration="0:0:0.2" />
                                         </Transitions>
-                                    </Label.Transitions>
-                                </Label>
+                                    </TextBlock.Transitions>
+                                </TextBlock>
                             </StackPanel>
                             
                             <!-- 收起/展开按钮 -->
                             <Button Grid.Column="2" Classes="transparent" Click="OnToggleSideBar">
-                                <Label Content="&#xE128;" Classes="icon-only"/>
+                                <TextBlock Text="&#xE128;" Classes="icon-only"/>
                             </Button>
                         </Grid>
                         
@@ -54,11 +54,11 @@
                         <!-- 底栏 -->
                         <Grid Grid.Row="2" ColumnDefinitions="Auto * Auto">
                             <Button Classes="transparent">
-                                <Label Content="&#xE272;" Classes="icon-only"/>
+                                <TextBlock Text="&#xE272;" Classes="icon-only"/>
                             </Button>
                             
                             <Button Name="BtnBottomAdd" Grid.Column="2" Classes="transparent">
-                                <Label Content="&#xE3D4;" Classes="icon-only"/>
+                                <TextBlock Text="&#xE3D4;" Classes="icon-only"/>
                                 <Button.Transitions>
                                     <Transitions>
                                         <DoubleTransition Property="Opacity" Duration="0:0:0.2" />
@@ -76,7 +76,7 @@
                         <controls:SearchBox Height="60"></controls:SearchBox>
                         
                         <Button Grid.Column="1" Classes="transparent">
-                            <Label Content="&#xE3D4;" Classes="icon-only"/>
+                            <TextBlock Text="&#xE3D4;" Classes="icon-only"/>
                         </Button>
                     </Grid>
                     

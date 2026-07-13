@@ -1,0 +1,15 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:controls="using:StartBox.Controls"
+             x:Class="StartBox.Pages.SelectPage" Background="{DynamicResource TempBackgroundGradient}">
+    <ScrollViewer>
+        <WrapPanel Name="PanelGridContainer" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <controls:SelectCard Icon="&#xE5DA;" Text="软件"></controls:SelectCard>
+            <controls:SelectCard Icon="&#xE288;" Text="网页"></controls:SelectCard>
+            <controls:SelectCard Icon="&#xE230;" Text="文件"></controls:SelectCard>
+        </WrapPanel>
+    </ScrollViewer>
+</UserControl>

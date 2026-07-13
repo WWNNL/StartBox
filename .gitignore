@@ -1,0 +1,8 @@
+# 基础 .gitignore 模板 (Avalonia/C#)
+bin/
+obj/
+*.user
+.vs/
+*.suo
+*.ncb
+*.sdf

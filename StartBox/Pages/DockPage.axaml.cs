@@ -13,7 +13,6 @@ namespace StartBox.Pages;
 
 public partial class DockPage : UserControl
 {
-    private int _pageCounter = 0;
     public DockPage()
     {
         InitializeComponent();

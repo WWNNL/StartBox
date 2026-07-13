@@ -10,16 +10,15 @@
             <!-- 【关键修改】：将 StackPanel 改为 Grid，分为 40px(图标) 和 *(文字) -->
             <Button HorizontalAlignment="Stretch" Margin="0,2">
                 <Grid ColumnDefinitions="40,*">
-                    <Label Content="&#xE560;" Classes="icon" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock Text="&#xE560;" Classes="icon"/>
                     <!-- 文字放在第二列，当侧边栏变窄时，这一列变窄，文字会被物理截断 -->
-                    <Label Content="桌面" Grid.Column="1" VerticalAlignment="Center"/> 
+                    <TextBlock Text="桌面" Grid.Column="1" VerticalAlignment="Center"/> 
                 </Grid>
             </Button>
             <Button HorizontalAlignment="Stretch" Margin="0,2">
                 <Grid ColumnDefinitions="40,*">
-                    <Label Content="&#xE390;" Classes="icon" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <!-- 文字放在第二列，当侧边栏变窄时，这一列变窄，文字会被物理截断 -->
-                    <Label Content="收纳盒" Grid.Column="1" VerticalAlignment="Center"/> 
+                    <TextBlock Text="&#xE390;" Classes="icon"/>
+                    <TextBlock Text="收纳盒" Grid.Column="1" VerticalAlignment="Center"/> 
                 </Grid>
             </Button>
         </StackPanel>
