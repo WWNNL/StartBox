@@ -75,13 +75,20 @@
                     <Grid ColumnDefinitions="* Auto">
                         <controls:SearchBox Height="60"></controls:SearchBox>
                         
-                        <Button Grid.Column="1" Classes="transparent">
+                        <Button Grid.Column="1" Classes="transparent" Click="AddFavoriteButton_Click">
                             <TextBlock Text="&#xE3D4;" Classes="icon-only"/>
                         </Button>
                     </Grid>
                     
                     <!-- <TextBlock Grid.Row="1" Text="主内容区" HorizontalAlignment="Center" VerticalAlignment="Center"/> -->
-                    <pages:StoragePageBase Name="RightPageContainer" Grid.Row="1"></pages:StoragePageBase>
+                    <!-- <pages:StoragePage Name="RightPageContainer" Grid.Row="1"></pages:StoragePage> -->
+                    <TransitioningContentControl Grid.Row="1" x:Name="PageContainer">
+                        <!-- 配置切换动画：交叉淡入淡出，时长 0.3 秒 -->
+                        <TransitioningContentControl.PageTransition>
+                            <CrossFade Duration="0:0:0.3" />
+                            <!-- 或者使用滑动动画：<PageSlide Duration="0:0:0.3" Orientation="Horizontal" /> -->
+                        </TransitioningContentControl.PageTransition>
+                    </TransitioningContentControl>
                 </Grid>
             </Grid>
         </Grid>

@@ -4,6 +4,8 @@
     <option name="projectPerEditor">
       <map>
         <entry key="StartBox/App.axaml" value="StartBox/StartBox.csproj" />
+        <entry key="StartBox/Controls/DockButton.axaml" value="StartBox/StartBox.csproj" />
+        <entry key="StartBox/Controls/DockCard.axaml" value="StartBox/StartBox.csproj" />
         <entry key="StartBox/Controls/GridCard.axaml" value="StartBox/StartBox.csproj" />
         <entry key="StartBox/Controls/InputBox.axaml" value="StartBox/StartBox.csproj" />
         <entry key="StartBox/Controls/SearchBox.axaml" value="StartBox/StartBox.csproj" />
@@ -12,6 +14,7 @@
         <entry key="StartBox/Pages/DockPage.axaml" value="StartBox/StartBox.csproj" />
         <entry key="StartBox/Pages/SelectPage.axaml" value="StartBox/StartBox.csproj" />
         <entry key="StartBox/Pages/SettingsPage.axaml" value="StartBox/StartBox.csproj" />
+        <entry key="StartBox/Pages/StoragePage.axaml" value="StartBox/StartBox.csproj" />
         <entry key="StartBox/Pages/StoragePageBase.axaml" value="StartBox/StartBox.csproj" />
         <entry key="StartBox/Style/AppDefaultStyles.axaml" value="StartBox/StartBox.csproj" />
         <entry key="StartBox/Styles/AppDefaultStyles.axaml" value="StartBox/StartBox.csproj" />

@@ -1,5 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using StartBox.Pages;
 
 namespace StartBox;
 
@@ -11,9 +12,32 @@ public partial class MainWindow : Window
     private const double ExpandedWidth = 382;
     private const double CollapsedWidth = 60; 
 
+    // 1. 缓存页面实例，防止状态丢失
+    private readonly StoragePage _storagePage;
+    private readonly SelectPage _selectPage;
+
     public MainWindow()
     {
         InitializeComponent();
+
+        // 2. 初始化并缓存页面实例
+        _storagePage = new StoragePage();
+        _selectPage = new SelectPage();
+
+        // 3. 设置默认显示的首页
+        PageContainer.Content = _storagePage;
+    }
+
+    // 4. 按钮点击事件：切换页面
+    private void BtnHome_Click(object? sender, RoutedEventArgs e)
+    {
+        // 直接修改 Content，TransitioningContentControl 会自动播放动画
+        PageContainer.Content = _storagePage;
+    }
+
+    private void AddFavoriteButton_Click(object? sender, RoutedEventArgs e)
+    {
+        PageContainer.Content = Equals(PageContainer.Content, _selectPage) ? _storagePage : _selectPage;
     }
 
     private void OnToggleSideBar(object? sender, RoutedEventArgs e)

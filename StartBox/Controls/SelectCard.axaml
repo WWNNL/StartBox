@@ -12,9 +12,22 @@
             <Setter Property="VerticalAlignment" Value="Center"></Setter>
             <Setter Property="FontFamily" Value="{DynamicResource Phosphor}"></Setter>
         </Style>
+        
+        <Style Selector="Border">
+            <Setter Property="RenderTransform" Value="scale(1)" />
+            <Setter Property="Transitions">
+                <Transitions>
+                    <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.1" />
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="Border:pointerover">
+            <Setter Property="RenderTransform" Value="scale(1.05)" />
+        </Style>
     </UserControl.Styles>
+    
     <Border Padding="8" BorderThickness="1" CornerRadius="8" Classes="acrylic"
-            HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10" Width="200" Height="200">
+            HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10" Width="180" Height="180">
         <Grid RowDefinitions="2.6* *">
             <TextBlock Text="{Binding $parent[local:SelectCard].Icon}" Classes="icon-only"/>
             <TextBlock Grid.Row="1" Text="{Binding $parent[local:SelectCard].Text}" HorizontalAlignment="Center"></TextBlock>
