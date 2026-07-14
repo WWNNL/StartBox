@@ -24,9 +24,8 @@
             <Setter Property="BorderBrush" Value="Transparent"/>
         </Style>
         
-        <Style Selector="TextBlock /template/ ContentPresenter">
+        <Style Selector="TextBlock.search-icon">
             <Setter Property="RenderTransform" Value="scale(1)" />
-
             <Setter Property="Transitions">
                 <Transitions>
                     <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.1" />
@@ -34,12 +33,12 @@
             </Setter>
         </Style>
 
-        <Style Selector="TextBlock.search-icon:pointerover /template/ ContentPresenter">
+        <Style Selector="TextBlock.search-icon:pointerover">
             <Setter Property="RenderTransform" Value="scale(1.1)" />
         </Style>
         
         <Style Selector="TextBlock.search-icon">
-            <Setter Property="FontSize" Value="15"></Setter>
+            <Setter Property="FontSize" Value="16"></Setter>
             <Setter Property="FontFamily" Value="{DynamicResource Phosphor}"/>
             <Setter Property="HorizontalAlignment" Value="Center"></Setter>
             <Setter Property="VerticalAlignment" Value="Center"></Setter>
@@ -49,7 +48,7 @@
     <Border Background="#12FFFFFF" BorderBrush="#26FFFFFF" BorderThickness="1" CornerRadius="8"
             Padding="6,10" Margin="10" Classes="acrylic">
          <Grid ColumnDefinitions="Auto,*,Auto" VerticalAlignment="Center">
-            <TextBlock Text="&#xE30C;" Classes="search-icon"></TextBlock>
+            <TextBlock Text="&#xE30C;" Classes="search-icon" Width="20"></TextBlock>
             
             <TextBox Name="InnerTextBox" Grid.Column="1" Classes="TransparentInner" PlaceholderText="请输入文本..."/>
             

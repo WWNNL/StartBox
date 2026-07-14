@@ -44,7 +44,7 @@
                             
                             <!-- 收起/展开按钮 -->
                             <Button Grid.Column="2" Classes="transparent" Click="OnToggleSideBar">
-                                <TextBlock Text="&#xE128;" Classes="icon-only"/>
+                                <TextBlock Text="&#xE062;" Classes="icon-only"/>
                             </Button>
                         </Grid>
                         
@@ -53,7 +53,7 @@
                         
                         <!-- 底栏 -->
                         <Grid Grid.Row="2" ColumnDefinitions="Auto * Auto">
-                            <Button Classes="transparent">
+                            <Button Classes="transparent" Click="SettingsButton_Click">
                                 <TextBlock Text="&#xE272;" Classes="icon-only"/>
                             </Button>
                             

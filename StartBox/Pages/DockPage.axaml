@@ -7,7 +7,7 @@
              Background="{DynamicResource TempBackgroundGradient}"
              x:Class="StartBox.Pages.DockPage">
     <ScrollViewer>
-        <StackPanel>
+        <StackPanel x:Name="NavList">
             <controls:DockButton Icon="&#xE560;" Text="桌面"></controls:DockButton>
             <controls:DockButton Icon="&#xE390;" Text="收纳盒"></controls:DockButton>
         </StackPanel>

@@ -15,6 +15,7 @@ public partial class MainWindow : Window
     // 1. 缓存页面实例，防止状态丢失
     private readonly StoragePage _storagePage;
     private readonly SelectPage _selectPage;
+    private readonly SettingsPage _settingsPage;
 
     public MainWindow()
     {
@@ -23,16 +24,16 @@ public partial class MainWindow : Window
         // 2. 初始化并缓存页面实例
         _storagePage = new StoragePage();
         _selectPage = new SelectPage();
+        _settingsPage = new SettingsPage();
 
         // 3. 设置默认显示的首页
         PageContainer.Content = _storagePage;
     }
 
     // 4. 按钮点击事件：切换页面
-    private void BtnHome_Click(object? sender, RoutedEventArgs e)
+    private void SettingsButton_Click(object? sender, RoutedEventArgs e)
     {
-        // 直接修改 Content，TransitioningContentControl 会自动播放动画
-        PageContainer.Content = _storagePage;
+        PageContainer.Content = Equals(PageContainer.Content, _settingsPage) ? _storagePage : _settingsPage;
     }
 
     private void AddFavoriteButton_Click(object? sender, RoutedEventArgs e)
