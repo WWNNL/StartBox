@@ -38,7 +38,7 @@
             HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10" Width="280">
          <Grid ColumnDefinitions="Auto,*" RowSpacing="12">
             <Image Grid.Column="0" Name="AppIconPath"
-                   Source="/Assets/Images/StartBoxIcon.png" 
+                   Source="/Assets/Images/StartBoxIcon1024.png"
                    Width="48" 
                    Height="48" 
                    VerticalAlignment="Top" 

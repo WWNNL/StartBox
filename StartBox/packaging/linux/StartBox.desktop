@@ -1,0 +1,13 @@
+[Desktop Entry]
+Version=1.0
+Name=StartBox
+GenericName=StartBox
+Comment=Cross-platform desktop app built with Avalonia
+Exec=/usr/bin/startbox %F
+Icon=startbox
+Terminal=false
+Type=Application
+Categories=Utility;
+StartupNotify=true
+StartupWMClass=StartBox
+Keywords=utility;desktop;
