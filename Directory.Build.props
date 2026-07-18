@@ -1,0 +1,30 @@
+<!--
+    StartBox 解决方案级 MSBuild 属性。
+    Microsoft.NET.Sdk 会自动 import 当前目录及所有父目录中的 Directory.Build.props。
+    把版本号、作者、版权等元数据集中在这里,csproj / 打包脚本 / CI 都从这里读。
+-->
+<Project>
+
+    <PropertyGroup>
+        <!--
+            版本号。
+            本地默认值: 1.0.0。
+            CI / Makefile 会通过 -p:Version=X.Y.Z 覆盖,无需改这个文件。
+            同步位置:
+              - StartBox.csproj   (AssemblyVersion / FileVersion / Version 由 SDK 自动推断)
+              - packaging/macos/build-app.sh  (Info.plist 中的 CFBundleVersion)
+              - packaging/linux/build-deb.sh  (DEBIAN/control 中的 Version)
+              - packaging/windows/StartBox.iss (MyAppVersion, 通过 ISCC /DMyAppVersion= 传入)
+        -->
+        <Version>1.0.0</Version>
+        <AssemblyVersion>$(Version)</AssemblyVersion>
+        <FileVersion>$(Version)</FileVersion>
+
+        <Authors>wwnnl</Authors>
+        <Company>wwnnl</Company>
+        <Copyright>Copyright © 2026 wwnnl</Copyright>
+        <Product>StartBox</Product>
+        <NeutralLanguage>en</NeutralLanguage>
+    </PropertyGroup>
+
+</Project>

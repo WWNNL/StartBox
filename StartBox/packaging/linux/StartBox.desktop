@@ -1,0 +1,13 @@
+[Desktop Entry]
+Version=1.0
+Name={{APP_NAME}}
+GenericName={{APP_NAME}}
+Comment=Cross-platform desktop app built with Avalonia
+Exec=/usr/bin/{{PKG_NAME}} %F
+Icon={{PKG_NAME}}
+Terminal=false
+Type=Application
+Categories=Utility;
+StartupNotify=true
+StartupWMClass={{APP_NAME}}
+Keywords=utility;desktop;

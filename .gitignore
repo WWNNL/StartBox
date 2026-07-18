@@ -6,3 +6,20 @@ obj/
 *.suo
 *.ncb
 *.sdf
+
+# Rider / VS Code
+.idea/
+.vscode/
+
+# macOS
+.DS_Store
+
+# ---- 打包产物 (packaging/) ----
+# 忽略所有 packaging 子平台的 dist/ 目录
+# (StartBox.app, .dmg, .icns, .deb, .exe, staging 等都在这里)
+StartBox/packaging/*/dist/
+StartBox/packaging/*/*.bak
+
+# ---- 临时文件 ----
+*.tmp
+*.swp

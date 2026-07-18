@@ -7,7 +7,7 @@
     x:Class="StartBox.MainWindow"
     xmlns:controls="using:StartBox.Controls"
     xmlns:pages="using:StartBox.Pages"
-    Icon="/Assets/Images/StartBoxIcon.png"
+    Icon="/Assets/Images/StartBoxIcon1024.png"
     Title="StartBox">
     <Border Background="{DynamicResource PrimaryBackgroundGradient}">
         <!-- 1. 外层改为 Auto, *。侧边栏用固定宽度，右侧主内容区用 * 填满 -->

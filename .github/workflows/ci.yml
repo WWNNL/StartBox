@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET 9
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+          cache: true
+          cache-dependency-path: '**/*.csproj'
+
+      - name: Build (Release)
+        run: |
+          dotnet build StartBox/StartBox.csproj \
+            -c Release \
+            -p:Version=0.0.0-ci.${{ github.run_number }}
+
+      - name: Run tests (if any)
+        shell: bash
+        run: |
+          if find . -path ./node_modules -prune -o -name '*.Tests.csproj' -print -quit | grep -q .; then
+            dotnet test --no-build -c Release
+          else
+            echo "No test projects found, skipping."
+          fi
