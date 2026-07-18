@@ -7,11 +7,11 @@
     <key>CFBundleDisplayName</key>
     <string>StartBox</string>
     <key>CFBundleIdentifier</key>
-    <string>com.wwnnl.startbox</string>
+    <string>{{BUNDLE_ID}}</string>
     <key>CFBundleVersion</key>
-    <string>1.0.0</string>
+    <string>{{VERSION}}</string>
     <key>CFBundleShortVersionString</key>
-    <string>1.0.0</string>
+    <string>{{VERSION}}</string>
     <key>CFBundleExecutable</key>
     <string>StartBox</string>
     <key>CFBundleIconFile</key>
@@ -24,12 +24,14 @@
     <string>????</string>
     <key>LSMinimumSystemVersion</key>
     <string>11.0</string>
+    <key>LSApplicationCategoryType</key>
+    <string>public.app-category.utilities</string>
     <key>NSHighResolutionCapable</key>
     <true/>
     <key>NSPrincipalClass</key>
     <string>NSApplication</string>
     <key>NSHumanReadableCopyright</key>
-    <string>Copyright © 2026 wwnnl. All rights reserved.</string>
+    <string>{{COPYRIGHT}}</string>
     <!-- 文件关联示例(根据需要启用) -->
     <!--
     <key>CFBundleDocumentTypes</key>

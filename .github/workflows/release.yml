@@ -1,0 +1,146 @@
+# Release 工作流
+# 触发: push tag v*.*.* 或手动 workflow_dispatch
+# 产物: linux/macos-arm64/macos-x64/windows 安装包 + SHA256SUMS
+# 上传: GitHub Release (draft)
+name: Release
+
+on:
+  push:
+    tags: ['v*.*.*']
+  workflow_dispatch:
+    inputs:
+      version:
+        description: '版本号 (例如 1.2.3),不带 v 前缀'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+# 同 tag 不取消(已发出去的 release 不能被新 push 打断)
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  resolve-version:
+    name: Resolve version
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.v.outputs.version }}
+    steps:
+      - id: v
+        run: |
+          if [ "${{ github.event_name }}" = "push" ]; then
+            VERSION="${GITHUB_REF_NAME#v}"
+          else
+            VERSION="${{ inputs.version }}"
+          fi
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+
+  build:
+    name: ${{ matrix.label }}
+    needs: resolve-version
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            label: Linux .deb
+            artifact: startbox-linux-amd64
+            out_name: startbox-${{ needs.resolve-version.outputs.version }}-linux-amd64.deb
+            build_cmd: make package-linux
+          - os: macos-14
+            label: macOS .dmg (arm64)
+            artifact: startbox-macos-arm64
+            out_name: startbox-${{ needs.resolve-version.outputs.version }}-macos-arm64.dmg
+            build_cmd: make package-mac
+          - os: macos-13
+            label: macOS .dmg (x64)
+            artifact: startbox-macos-x64
+            out_name: startbox-${{ needs.resolve-version.outputs.version }}-macos-x64.dmg
+            build_cmd: ./StartBox/packaging/macos/build-app.sh x64
+          - os: windows-latest
+            label: Windows installer
+            artifact: startbox-windows-x64
+            out_name: startbox-setup-${{ needs.resolve-version.outputs.version }}-win-x64.exe
+            build_cmd: powershell
+
+    env:
+      VERSION: ${{ needs.resolve-version.outputs.version }}
+      PORTABLE: '1'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+          cache: true
+          cache-dependency-path: '**/*.csproj'
+
+      - name: Build
+        shell: bash
+        run: ${{ matrix.build_cmd }}
+
+      - name: Stage artifacts (Unix)
+        if: matrix.os != 'windows-latest'
+        shell: bash
+        run: |
+          mkdir -p out
+          cp StartBox/packaging/linux/dist/*.deb  out/${{ matrix.out_name }} 2>/dev/null || true
+          cp StartBox/packaging/linux/dist/*.sha256 out/${{ matrix.out_name }}.sha256 2>/dev/null || true
+          cp StartBox/packaging/macos/dist/*.dmg  out/${{ matrix.out_name }} 2>/dev/null || true
+          cp StartBox/packaging/macos/dist/*.sha256 out/${{ matrix.out_name }}.sha256 2>/dev/null || true
+          ls -la out/
+
+      - name: Stage artifacts (Windows)
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path out -Force | Out-Null
+          Copy-Item "StartBox\packaging\windows\dist\StartBox-Setup-$env:VERSION-win-x64.exe" "out\${{ matrix.out_name }}"
+          Get-ChildItem out/
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: out/
+          if-no-files-found: error
+
+  release:
+    name: Publish release
+    needs:
+      - resolve-version
+      - build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist/
+
+      - name: Flatten & concat SHA256SUMS
+        run: |
+          mkdir -p release
+          find dist -type f \( -name '*.deb' -o -name '*.dmg' -o -name '*.exe' \) -exec cp {} release/ \;
+          cat release/*.sha256 > release/SHA256SUMS
+          cat release/SHA256SUMS
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ needs.resolve-version.outputs.version }}
+          name: StartBox v${{ needs.resolve-version.outputs.version }}
+          draft: true
+          generate_release_notes: true
+          files: |
+            release/*
+            release/SHA256SUMS
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

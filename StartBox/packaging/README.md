@@ -1,142 +1,206 @@
-# StartBox 多平台安装包打包指南
+# StartBox 打包与发布指南
 
-本目录包含 Windows / macOS / Linux 三个桌面平台的安装包打包脚本。
+Windows / macOS / Linux 三端桌面应用打包脚本与 CI 流水线说明。
 
-## 一览
+## TL;DR
 
-| 平台 | 安装包 | 脚本 | 工具链 | 产物 |
-|---|---|---|---|---|
-| Windows | `.exe` 安装程序 | `windows/StartBox.iss` | Inno Setup 6.x | `StartBox-Setup-1.0.0-win-x64.exe` |
-| macOS | `.app` + `.dmg` | `macos/build-app.sh` | 系统自带 `sips` + `iconutil` + `hdiutil` | `StartBox-1.0.0-osx-arm64.dmg` |
-| Linux | `.deb` 包 | `linux/build-deb.sh` | `dpkg-deb` | `startbox_1.0.0_amd64.deb` |
+| 用途 | 命令 |
+|---|---|
+| 本地调试运行 | `make run` |
+| 本地冒烟测试 | `make verify` |
+| 跨平台发布 | **push tag `v1.2.3` → GitHub Actions 自动打三个平台** |
+| 本地打单个包 | `make package-mac` / `make package-linux` |
+| 强制自包含 | `PORTABLE=1 make package-mac` |
+| 改版本号 | `VERSION=1.2.3 make verify` |
 
-所有脚本都通过 `Makefile` 集成,在项目根目录跑即可。
+---
 
-## 快速上手
+## 一、发布流程（推荐走 CI）
+
+CI 是跨平台打包的**唯一推荐路径**。本地只做开发调试。
+
+### 自动发布
 
 ```bash
-# macOS: 打包 .app + .dmg(本机架构)
+git tag v1.2.3
+git push origin v1.2.3
+```
+
+GitHub Actions (`.github/workflows/release.yml`) 会：
+
+1. 解析 tag，得到 `VERSION=1.2.3`
+2. 在 `ubuntu-latest` / `macos-14` / `macos-13` / `windows-latest` 四个 runner 上并发跑：
+   - Linux x64 → `startbox-1.2.3-linux-amd64.deb`
+   - macOS arm64 (Apple Silicon) → `startbox-1.2.3-macos-arm64.dmg`
+   - macOS x64 (Intel) → `startbox-1.2.3-macos-x64.dmg`
+   - Windows x64 → `startbox-setup-1.2.3-win-x64.exe`
+3. 生成 `SHA256SUMS`（每个产物 + 各自 `.sha256` 文件）
+4. 上传为 **draft release**，需到 GitHub Releases 页手动 publish
+
+### 手动触发
+
+`Actions` → `Release` → `Run workflow` → 输入版本号。
+
+### CI 不做的事
+
+- ❌ **Apple 公证（notarization）**：需要 Apple Developer 账号 + `xcrun notarytool`，本仓库未配置。
+- ❌ **代码签名**：macOS 上 `.app` 是未签名的，第一次打开会被 Gatekeeper 拦截（右键 → 打开 即可）。
+- ❌ **Linux ARM64 / Windows ARM64**：GitHub-hosted runner 上构建没开，可按需扩 `release.yml`。
+
+---
+
+## 二、版本号来源
+
+只有一个真相源：**仓库根 `Directory.Build.props`** 中的 `<Version>`。
+
+- `dotnet build` / `dotnet publish` 通过 `-p:Version=X.Y.Z` 传入（默认走 Directory.Build.props）
+- macOS 脚本读 `VERSION` 环境变量，sed 注入到 `Info.plist`
+- Linux 脚本读 `VERSION` 环境变量，sed 注入到 `DEBIAN/control`
+- Windows 安装器通过 `ISCC /DMyAppVersion=X.Y.Z` 传入
+
+CI 自动从 tag 取（`v1.2.3` → `1.2.3`），本地手动用 `VERSION=1.2.3 make ...`。
+
+---
+
+## 三、本地开发
+
+```bash
+make build         # Debug 构建
+make run           # Debug 运行
+make verify        # Release 构建，提交前冒烟
+make clean         # 清理所有 build/publish/package 输出
+```
+
+---
+
+## 四、本地打包（单平台冒烟）
+
+只在修改了打包脚本本身时需要本地跑，平时依赖 CI。
+
+### macOS
+
+```bash
+# 仅本机架构（Apple Silicon → osx-arm64，Intel → osx-x64）
 make package-mac
 
-# Linux: 打包 .deb
-make package-linux
+# 自包含（分发给最终用户）
+make package-mac PORTABLE=1
 
-# 一次性出本机可打包的所有平台
-make package-all
+# 指定架构 + 版本
+make package-mac VERSION=1.2.3
+# 等价于直接调:
+./StartBox/packaging/macos/build-app.sh VERSION=1.2.3 PORTABLE=1
 
-# 分发给最终用户(自包含,体积大)
-make package-all PORTABLE=1
+# 可选 Developer ID 签名（不公证）
+CODESIGN_IDENTITY="Developer ID Application: ACME (XXXXXXXXXX)" make package-mac PORTABLE=1
 ```
 
-## 各平台详细步骤
+产物：`StartBox/packaging/macos/dist/StartBox.app`、`StartBox-<VERSION>-<RID>.dmg`、`<...>.dmg.sha256`。
 
-### macOS (`make package-mac`)
+### Linux
 
-**前置条件**(macOS 自带):
-- `dotnet 9 SDK`
-- `sips` / `iconutil` / `hdiutil`
-
-**脚本行为**:
-1. 跑 `dotnet publish -r osx-arm64`(可选 `--self-contained`)
-2. 从 `Assets/Images/StartBoxIcon1024.png` 生成 `StartBox.icns`
-3. 拼装 `StartBox.app/Contents/{MacOS, Resources, Info.plist}`
-4. 用 `hdiutil` 打包成只读 `.dmg`(含 `Applications` 软链接)
-
-**未做的事**:
-- ❌ Apple 公证(notarization)——需要 Apple Developer 账号 + `xcrun notarytool`
-- ❌ 跨架构编译(只产本机架构;要交叉编译改 RID 参数)
-
-**发布**:
-- 第一次打开 .dmg 拖进 Applications,Gatekeeper 可能拦,**右键 → 打开** 即可
-- 公网分发必须做公证,否则 Gatekeeper 强制拦截
-
-### Linux (`make package-linux`)
-
-**前置条件**:
-- `dotnet 9 SDK`
-- `dpkg-deb`(Debian/Ubuntu 自带;macOS: `brew install dpkg`)
-
-**脚本行为**:
-1. 跑 `dotnet publish -r linux-x64`(可选 `--self-contained`)
-2. 拼装 Debian 标准目录结构:
-   ```
-   /usr/bin/startbox              # 启动脚本
-   /usr/lib/startbox/             # 应用文件
-   /usr/share/applications/       # .desktop 桌面快捷方式
-   /usr/share/pixmaps/            # 图标
-   /usr/share/icons/hicolor/.../  # 多分辨率图标
-   ```
-3. 用 `dpkg-deb` 打包
-
-**安装 / 卸载**:
 ```bash
-sudo apt install ./startbox_1.0.0_amd64.deb    # 装
-sudo apt remove startbox                       # 卸
+make package-linux                    # amd64 框架依赖
+make package-linux PORTABLE=1         # amd64 自包含
+./StartBox/packaging/linux/build-deb.sh arm64 PORTABLE=1   # arm64 自包含
+MAINTAINER="Your Name <you@example.com>" make package-linux
 ```
 
-**未做的事**:
-- ❌ AppImage(跨发行版的单文件方案)
-- ❌ RPM 包(RedHat/Fedora)
-- ❌ ARM64 / 其他架构(改 ARCH 参数即可)
+产物：`StartBox/packaging/linux/dist/startbox_<VERSION>_<ARCH>.deb` + `.sha256`。
 
-### Windows (`make package-win`)
+依赖：Debian/Ubuntu 自带 `dpkg-deb`；macOS 上跑 Linux 打包需要 `brew install dpkg`。
 
-`make package-win` 只打印步骤说明,**实际打包需要 Windows 机器 + Inno Setup**。
+### Windows
 
-**前置条件**:
-- Windows 10/11
-- .NET 9 SDK
-- Inno Setup 6.x: <https://jrsoftware.org/isinfo.php>
+Windows 安装包只能在 Windows 上构建（Inno Setup 编译器是 Win32 PE）。两种方式：
 
-**手动步骤**:
+1. **走 CI**：push tag 自动产出
+2. **手动（Windows 上）**：
+
 ```bat
-:: 1. 先跑 publish
-dotnet publish StartBox\StartBox.csproj -c Release -r win-x64 --self-contained
-
-:: 2. 编译安装程序(会自动找 ISCC.exe)
-"C:\Program Files (x86)\Inno Setup 6\ISCC.exe" StartBox\packaging\windows\StartBox.iss
-
-:: 3. 产物
-:: StartBox\packaging\windows\dist\StartBox-Setup-1.0.0-win-x64.exe
+dotnet publish StartBox\StartBox.csproj -c Release -r win-x64 --self-contained -p:Version=1.2.3
+"C:\Program Files (x86)\Inno Setup 6\ISCC.exe" /DMyAppVersion=1.2.3 StartBox\packaging\windows\StartBox.iss
 ```
 
-**未做的事**:
-- ❌ MSIX(微软商店格式)
-- ❌ exe 图标(需要 .ico 文件,把 `packaging/windows/StartBox.iss` 里的 `SetupIconFile=StartBox.ico` 取消注释并提供 .ico)
+产物：`StartBox\packaging\windows\dist\StartBox-Setup-<VERSION>-win-x64.exe`。
 
-## 自定义配置
+---
 
-需要改的全局变量在每个脚本的开头:
-- `APP_NAME`:应用显示名(影响 .desktop / .app / Info.plist)
-- `APP_VERSION`:版本号
-- `APP_BUNDLE_ID`(macOS):`com.xxx.xxx` 格式
-- `PKG_NAME`(Linux):deb 包名,小写无空格
-- `Maintainer`(Linux DEBIAN/control):你的名字 + 邮箱
-- 各种 Icon 路径
+## 五、各平台脚本细节
 
-## 图标建议
+### `macos/build-app.sh`
 
-| 平台 | 格式 | 推荐尺寸 |
-|---|---|---|
-| Windows `.ico` | `.ico` | 256×256 多分辨率 |
-| macOS `.icns` | `.icns` | 1024×1024 源 png |
-| Linux `.png` | `.png` | 256×256 + SVG 矢量 |
+- 接受完整 RID（`osx-arm64`）或简写（`arm64`/`x64`）
+- 自动探测本机架构作为默认值
+- 从单张 1024×1024 PNG 用 `sips` 生成 Apple 标准 iconset（`16@2x`/`32@2x`/`128@2x`/...）
+- dmg 用 APFS 文件系统，容量 400 MB（足够自包含 .NET 运行时）
+- 写一个空的 `PkgInfo`，让 `lsbom` 等工具把它识别为合规 bundle
+- 可选 `CODESIGN_IDENTITY` 环境变量触发 `codesign --deep --options runtime`
 
-当前 `Assets/Images/StartBoxIcon1024.png` 是 **1024×1024**(高质量源图)。`StartBoxIcon64.png` 是历史遗留的小图,仅作备份。
+### `linux/build-deb.sh`
 
-如果以后要换图标:
-1. 用 SVG(`StartBoxIcon.svg`)在任意工具导出新的 1024×1024 PNG,覆盖 `StartBoxIcon1024.png`
-2. macOS 脚本自动从中生成全套尺寸
-3. Windows 用同一张 PNG 转 `.ico`(ImageMagick: `magick icon.png -define icon:auto-resize=256,128,64,32,16 icon.ico`)
+- 启动脚本 `/usr/bin/startbox` 会自动探测 `.NET` 运行时位置：
+  - `/usr/lib/startbox`（自包含）
+  - `/usr/share/dotnet`（Debian/Ubuntu 官方包）
+  - `/usr/lib/dotnet`、`/opt/dotnet`
+- `.desktop` 文件用 `packaging/linux/StartBox.desktop` 模板渲染，避免重复定义
+- `DEBIAN/control` 用同样的 sed 占位符模式
 
-## 体积优化
+### `windows/StartBox.iss`
 
-框架依赖 vs 自包含,见根目录 `Makefile` 的 `PORTABLE` 开关:
-- `make package-mac` — 框架依赖(目标机器装 .NET 9,体积 ~30 MB)
-- `make package-mac PORTABLE=1` — 自包含(含 .NET 运行时,体积 ~140 MB,适合分发)
+- Inno Setup 6.x 脚本，通过 ISPP（preprocessor）渲染
+- 默认版本 1.0.0，CI/手动用 `/DMyAppVersion=X.Y.Z` 覆盖
+- `PublishDir` 默认从 `.iss` 位置往上两级算，可通过 `/DPublishDir=<绝对路径>` 覆盖
+- `Modern` 安装向导 + 双语（English / 简体中文）
 
-## 已知限制
+---
 
-- macOS 不做代码签名/公证,只适合本地/内部分发
-- Windows 必须用 Windows 机器打包(没做 Wine 交叉编译)
-- Linux 只支持 Debian 系(`.deb`),不覆盖 RHEL/Fedora
+## 六、目录结构
+
+```
+.github/workflows/
+  ci.yml                          # PR/main 构建检查
+  release.yml                     # tag 触发的发布流水线
+StartBox/packaging/
+  README.md                       # 本文件
+  macos/
+    build-app.sh                  # macOS .app + .dmg
+    Info.plist                    # 含 {{VERSION}} {{BUNDLE_ID}} {{COPYRIGHT}} 占位符
+  linux/
+    build-deb.sh                  # Linux .deb
+    DEBIAN/control                # 含 {{VERSION}} {{MAINTAINER}} {{HOMEPAGE}}
+    StartBox.desktop              # 含 {{APP_NAME}} {{PKG_NAME}}
+  windows/
+    StartBox.iss                  # Inno Setup 脚本
+Makefile                          # 根目录:本地开发 + 单平台打包入口
+Directory.Build.props             # 版本号单一真相源
+```
+
+---
+
+## 七、常见问题
+
+**Q: dmg 打开被 Gatekeeper 拦截？**
+A: 未签名是预期的。右键 → 打开 → 确认。若要分发，建议跑 `CODESIGN_IDENTITY=... make package-mac`。
+
+**Q: 自包含 .deb 装上后启动报错找不到运行时？**
+A: 启动脚本 `/usr/bin/startbox` 会自动探测标准路径。如系统把 .NET 装到非常规位置，运行时设 `DOTNET_ROOT=/path/to/dotnet` 即可。
+
+**Q: 想同时打 arm64 + x64 macOS dmg？**
+A: 直接 `git tag v1.2.3 && git push origin v1.2.3`，CI 自动并行出两个架构。本地也可以分别跑：
+```bash
+./StartBox/packaging/macos/build-app.sh osx-arm64
+./StartBox/packaging/macos/build-app.sh osx-x64
+```
+
+**Q: 想跑 Windows 打包但没 Windows 机器？**
+A: 当前仓库不提供 Wine 包装脚本。推 tag 让 CI 跑 `windows-latest` job 即可，产物会出现在 release draft 里。
+
+---
+
+## 八、已知限制
+
+- Apple 公证未接入，`.app`/`dmg` 首次打开需手动确认
+- 没有自动签名/公证 pipeline
+- Linux 只覆盖 Debian 系（`.deb`），没出 RPM/AppImage
+- Windows Inno Setup 脚本需要 Windows runner，本地 macOS/Linux 无法直接跑

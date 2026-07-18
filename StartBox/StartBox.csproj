@@ -1,12 +1,26 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <OutputType>WinExe</OutputType>
+        <!--
+            OutputType 默认 Exe(适用于 macOS / Linux)。
+            当发布到 Windows RID 时,覆盖为 WinExe,避免弹出控制台窗口。
+            注意: 跨 RID publish 时,SDK 会按 RID 重新评估 PropertyGroup,所以条件生效。
+        -->
+        <OutputType>Exe</OutputType>
+        <OutputType Condition="$(RuntimeIdentifier.StartsWith('win'))">WinExe</OutputType>
+
         <TargetFramework>net9.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <!--
+            BuiltInComInteropSupport: 在 Windows 上打包 COM 互操作所需的内置类型。
+            即使当前不直接用 COM,Avalonia 的 Windows 后端 / 剪贴板等会用到,设为 true 避免运行时缺类型。
+        -->
         <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
         <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+
+        <!-- 版本号、作者、版权从仓库根 Directory.Build.props 读取 -->
+        <!-- 默认值 1.0.0;CI 通过 -p:Version=X.Y.Z 覆盖 -->
 
         <!--
             桌面三件套 (Windows / macOS / Linux) 共享同一个 TFM:net9.0。
@@ -55,6 +69,12 @@
         <PackageReference Include="Avalonia.Themes.Fluent" Version="12.0.4" />
         <PackageReference Include="Avalonia.Fonts.Inter" Version="12.0.4" />
         <PackageReference Include="AvaloniaUI.DiagnosticsSupport" Version="2.2.1">
+            <!--
+                注意: 2.2.1 对应 Avalonia 11,与 Avalonia 12.0.4 ABI 不一定完全兼容。
+                若在 DEBUG 下打开 DevTools 抛 MissingMethodException,
+                请替换为 Avalonia 12 兼容版本(目前 NuGet 上需手动指定 nightly 或本地 build),
+                或直接删除该引用——生产环境 Release 不会带上它。
+            -->
             <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
             <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
         </PackageReference>
