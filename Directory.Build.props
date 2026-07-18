@@ -17,8 +17,19 @@
               - packaging/windows/StartBox.iss (MyAppVersion, 通过 ISCC /DMyAppVersion= 传入)
         -->
         <Version>1.0.0</Version>
-        <AssemblyVersion>$(Version)</AssemblyVersion>
-        <FileVersion>$(Version)</FileVersion>
+
+        <!--
+            AssemblyVersion / FileVersion 必须是 major.minor[.build[.revision]] 的纯数字形式,
+            不接受 prerelease / build metadata 后缀(例如 "0.0.0-ci.1")。
+            这里用正则把 Version 里 - / + 之后的内容剥掉再赋给两个版本字段,
+            让 Version 本身可以自由携带 "1.2.3-beta1" / "0.0.0-ci.123" 这类语义化后缀。
+            CI 通过 -p:Version=0.0.0-ci.${{ github.run_number }} 注入时:
+              Version           = 0.0.0-ci.123   (NuGet / InformationalVersion 用)
+              AssemblyVersion   = 0.0.0           (CLR 强名称用)
+              FileVersion       = 0.0.0           (Windows 文件资源用)
+        -->
+        <AssemblyVersion>$([System.Text.RegularExpressions.Regex]::Replace('$(Version)', '[-+].*$', ''))</AssemblyVersion>
+        <FileVersion>$(AssemblyVersion)</FileVersion>
 
         <Authors>wwnnl</Authors>
         <Company>wwnnl</Company>
