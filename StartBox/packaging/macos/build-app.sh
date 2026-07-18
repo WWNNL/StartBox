@@ -187,14 +187,17 @@ rm -f "${TMP_DMG}"
 # 生成 SHA256(方便用户校验 / CI 上传)
 ( cd "${DIST_DIR}" && shasum -a 256 "${DMG_NAME}" > "${DMG_NAME}.sha256" )
 
+# 清理中间文件
+rm -f "${INFO_PLIST_TMP}"
+
 # ---- 完成 ----
 echo ""
 echo "==> 完成 ✅"
-echo "    .app: ${SCRIPT_DIR}/${APP_BUNDLE}"
-echo "    .dmg: ${SCRIPT_DIR}/${DMG_PATH}"
-echo "    sha256: ${SCRIPT_DIR}/${DIST_DIR}/${DMG_NAME}.sha256"
+echo "    .app:    ${APP_BUNDLE}"
+echo "    .dmg:    ${DMG_PATH}"
+echo "    sha256:  ${DMG_PATH}.sha256"
 echo ""
 echo "提示:"
-echo "  - 测试运行: open '${SCRIPT_DIR}/${APP_BUNDLE}'"
+echo "  - 测试运行: open '${APP_BUNDLE}'"
 echo "  - 第一次打开可能被 Gatekeeper 拦截,右键 → 打开 即可"
 echo "  - 公网分发建议先 codesign + Apple 公证,本脚本未做"
